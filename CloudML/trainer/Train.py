@@ -4,7 +4,7 @@ import os
 import cv2
 from tqdm import tqdm
 
-DATADIR = "C:/Users/Pedro/PycharmProjects/DiaRet/data/train-sample"
+DATADIR = "gs://kerastraindata/train-resized-256"
 CATEGORIES = ["Healthy", "Disease"]
 
 for category in CATEGORIES:
@@ -12,7 +12,7 @@ for category in CATEGORIES:
     for img in os.listdir(path):
         img_array = cv2.imread(os.path.join(path,img))
 
-IMG_SIZE = 50
+IMG_SIZE = 256
 
 # new_array = cv2.resize(img_array, (IMG_SIZE, IMG_SIZE))
 # plt.imshow(new_array, cmap='gray')
@@ -68,23 +68,3 @@ X = pickle.load(pickle_in)
 pickle_in = open("y.pickle","rb")
 y = pickle.load(pickle_in)
 X[1]
-
-
-
-export JOB_NAME="test_job"
-export BUCKET_NAME=kerastraindata
-export CLOUD_CONFIG=trainer/cloudml-gpu.yaml
-export JOB_DIR=gs://coinop-data/jobs/$JOB_NAME
-export MODULE=trainer.cloud_trainer
-export PACKAGE_PATH=./trainer
-export REGION=europe-west2
-export RUNTIME=1.2
-export TRAIN_FILE=gs://kerastraindata/X.pickle
-
-gcloud ml-engine jobs submit training $JOB_NAME \
-    --job-dir $JOB_DIR \
-    --runtime-version $RUNTIME \
-    --module-name $MODULE \
-    --package-path $PACKAGE_PATH \
-    --region $REGION \
-    --config-$CLOUD_CONFIG
